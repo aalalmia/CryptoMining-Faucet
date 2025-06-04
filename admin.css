@@ -1,0 +1,104 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    color: #fff;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.admin-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    color: #00e676;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h2 {
+    margin-top: 30px;
+    border-bottom: 1px solid #00e676;
+    padding-bottom: 10px;
+}
+
+.admin-section {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.ad-form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin: 10px 0 5px;
+    color: #b2ebf2;
+}
+
+textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    resize: vertical;
+}
+
+button {
+    background: linear-gradient(to right, #00e676, #00bcd4);
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+    align-self: flex-start;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 230, 118, 0.3);
+}
+
+.withdrawal-list {
+    margin-top: 20px;
+}
+
+.withdrawal-request {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.withdrawal-request p {
+    margin: 5px 0;
+}
+
+.request-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.approve-btn {
+    background: linear-gradient(to right, #00e676, #00bcd4);
+}
+
+.reject-btn {
+    background: linear-gradient(to right, #ff3d00, #ff9800);
+}
