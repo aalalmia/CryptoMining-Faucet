@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Faucet Mining - Admin</title>
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body>
+    <div class="admin-container">
+        <h1>Admin Panel</h1>
+        
+        <div class="admin-section">
+            <h2>Login Page Ads</h2>
+            <div class="ad-form">
+                <label for="loginAd1">Ad 1 (300×250):</label>
+                <textarea id="loginAd1" placeholder="Paste ad HTML code"></textarea>
+                
+                <label for="loginAd2">Ad 2 (300×250):</label>
+                <textarea id="loginAd2" placeholder="Paste ad HTML code"></textarea>
+                
+                <button id="saveLoginAds">Save Login Ads</button>
+            </div>
+        </div>
+        
+        <div class="admin-section">
+            <h2>Main Page Popup Ads</h2>
+            <div class="ad-form">
+                <label for="popupAd1">Top Ad (300×100):</label>
+                <textarea id="popupAd1" placeholder="Paste ad HTML code"></textarea>
+                
+                <label for="popupAd2">Bottom Ad (300×100):</label>
+                <textarea id="popupAd2" placeholder="Paste ad HTML code"></textarea>
+                
+                <label for="popupAd3">Left Ad (100×300):</label>
+                <textarea id="popupAd3" placeholder="Paste ad HTML code"></textarea>
+                
+                <label for="popupAd4">Right Ad (100×300):</label>
+                <textarea id="popupAd4" placeholder="Paste ad HTML code"></textarea>
+                
+                <button id="savePopupAds">Save Popup Ads</button>
+            </div>
+        </div>
+        
+        <div class="admin-section">
+            <h2>Claim Reward Ad</h2>
+            <div class="ad-form">
+                <label for="claimAd">Fullscreen Ad (15s):</label>
+                <textarea id="claimAd" placeholder="Paste ad HTML code"></textarea>
+                
+                <button id="saveClaimAd">Save Claim Ad</button>
+            </div>
+        </div>
+        
+        <div class="admin-section">
+            <h2>Lucky Ads</h2>
+            <div class="ad-form">
+                <label for="luckyAd">Lucky Ad (15s):</label>
+                <textarea id="luckyAd" placeholder="Paste ad HTML code"></textarea>
+                
+                <button id="saveLuckyAd">Save Lucky Ad</button>
+            </div>
+        </div>
+        
+        <div class="admin-section">
+            <h2>Withdrawal Requests</h2>
+            <div class="withdrawal-list" id="withdrawalList">
+                <!-- Withdrawal requests will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="scripts/firebase.js"></script>
+    <script type="module" src="scripts/admin.js"></script>
+</body>
+</html>
