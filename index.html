@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoMining Faucet</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <div class="container" id="login-screen">
+      <h2>Login</h2>
+      <input id="email" type="email" placeholder="Email" /><br />
+      <input id="wallet" type="text" placeholder="Cwallet ID" /><br />
+      <input id="password" type="password" placeholder="Password" /><br />
+      <button onclick="login()">Login</button>
+
+      <!-- Login Page Ads -->
+      <div class="login-ad" id="login-ad-1">Ad 1</div>
+      <div class="login-ad" id="login-ad-2">Ad 2</div>
+    </div>
+
+    <div id="main-page" style="display:none;">
+      <h2>Welcome, Miner!</h2>
+
+      <!-- Mining Section -->
+      <div class="mining-section">
+        <p>Click to mine!</p>
+        <button onclick="startMining()">Start Mining</button>
+        <p id="mining-status"></p>
+      </div>
+
+      <!-- Spin Section -->
+      <div class="spin-section">
+        <h3>Spin to Win</h3>
+        <button onclick="spinWheel()">Spin</button>
+        <p id="spin-result"></p>
+      </div>
+
+      <!-- Lucky Ads -->
+      <div class="lucky-ads">
+        <h4>Lucky Ads (Timer Locked)</h4>
+        <button id="lucky-ad-btn" onclick="claimLuckyAd()">Claim</button>
+        <p id="lucky-timer"></p>
+      </div>
+
+      <!-- Wallets -->
+      <div class="wallets">
+        <h4>Withdrawals</h4>
+        <button onclick="requestWithdraw('lucky')">Withdraw Lucky Cash</button>
+        <button onclick="requestWithdraw('bwallet')">Withdraw Bwallet</button>
+      </div>
+
+      <!-- Poster Popups -->
+      <div class="popup-ad top" id="ad-top">Top Ad <button onclick="closeAd('top')">X</button></div>
+      <div class="popup-ad bottom" id="ad-bottom">Bottom Ad <button onclick="closeAd('bottom')">X</button></div>
+      <div class="popup-ad left" id="ad-left">Left Ad <button onclick="closeAd('left')">X</button></div>
+      <div class="popup-ad right" id="ad-right">Right Ad <button onclick="closeAd('right')">X</button></div>
+    </div>
+  </div>
+
+  <!-- Firebase Config -->
+  <script type="module" src="firebase-config.js"></script>
+  <!-- Main Script -->
+  <script src="script.js"></script>
+</body>
+</html>
