@@ -17,28 +17,27 @@ function showLoginPage() {
   app.innerHTML = `
     <div class="container" id="login-page">
       <h2>Welcome to Crypto Faucet Mining</h2>
-      <div class="login-ads"><div id="ad-login-1">[Login Ad 1]</div><div id="ad-login-2">[Login Ad 2]</div></div>
+      <div class="login-ads">
+        <div id="ad-login-1">[Login Ad 1]</div>
+        <div id="ad-login-2">[Login Ad 2]</div>
+      </div>
       <input id="email" placeholder="Email" type="email" />
       <input id="wallet" placeholder="Cwallet ID" type="text" />
-      <input id="password" placeholder="Password" type="password" />
+      <input id="password" placeholder="Password (min 8 chars)" type="password" />
       <button onclick="login()">Let’s Start</button>
     </div>
   `;
   loadAdContent();
 }
 
-// LOGIN HANDLER
+// LOGIN HANDLER (updated)
 function login() {
   const email = document.getElementById("email").value;
   const wallet = document.getElementById("wallet").value;
   const password = document.getElementById("password").value;
 
   if (!email || !wallet || !password) return alert("Fill all fields");
-
-  const strong = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*#?&]).{8,}$/;
-  if (!strong.test(password)) {
-    return alert("Weak password: use upper, lower, number & symbol");
-  }
+  if (password.length < 8) return alert("Password must be at least 8 characters");
 
   currentUser = { email, wallet, password, joined: Date.now() };
   localStorage.setItem("user", JSON.stringify(currentUser));
@@ -95,7 +94,6 @@ function showMiningPage() {
 function startMiningProgress() {
   let fill = 0;
   const bar = document.getElementById("mining-bar-fill");
-  const captcha = document.getElementById("captcha");
 
   const interval = setInterval(() => {
     fill += 1;
@@ -156,7 +154,7 @@ function openLuckyAds() {
   showClaimFrame('LuckyCash');
 }
 
-// SPIN
+// SPIN SYSTEM
 function openSpin() {
   document.getElementById("spin-popup").style.display = "block";
 }
@@ -220,8 +218,8 @@ function closePopupAd(side) {
 function loadAdContent() {
   ['top','bottom','left','right','login-1','login-2'].forEach(pos => {
     const path = "ads/" + pos;
-    window.dbRef(window.db, path);
-    window.dbRef(window.db, path).on('value', snap => {
+    const adRef = window.dbRef(window.db, path);
+    window.dbOn(adRef, snap => {
       const html = snap.val();
       const el = document.getElementById("popup-ad-" + pos) || document.getElementById("ad-" + pos.replace('login-', 'login-'));
       if (el && html) el.innerHTML = html;
