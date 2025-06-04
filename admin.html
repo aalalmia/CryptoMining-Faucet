@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>Withdrawal Requests</h2>
+  <div id="requests"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+    import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCuqS4awtYYyC9nyDtmA99Lainu19Brqb8",
+      authDomain: "cryptomining-faucet.firebaseapp.com",
+      projectId: "cryptomining-faucet",
+      storageBucket: "cryptomining-faucet.appspot.com",
+      messagingSenderId: "197160555122",
+      appId: "1:197160555122:web:1171e1db0a52172c6168eb"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const reqRef = ref(db, "withdrawals");
+    onValue(reqRef, snapshot => {
+      const div = document.getElementById("requests");
+      div.innerHTML = "";
+      snapshot.forEach(child => {
+        const data = child.val();
+        const el = document.createElement("div");
+        el.innerHTML = `
+          <b>${data.wallet}</b> requested <i>${data.type}</i> 
+          <button onclick="markPaid('${child.key}')">Mark Paid</button>
+        `;
+        div.appendChild(el);
+      });
+    });
+
+    window.markPaid = function (key) {
+      remove(ref(db, "withdrawals/" + key));
+    };
+  </script>
+</body>
+</html>
