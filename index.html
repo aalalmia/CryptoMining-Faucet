@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CryptoMining Faucet</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- POPUP POSTER ADS -->
+  <div id="popup-top" class="popup-ad top"><span class="close-btn" onclick="closePopupAd('top')">✖</span><div id="popup-ad-top"></div></div>
+  <div id="popup-bottom" class="popup-ad bottom"><span class="close-btn" onclick="closePopupAd('bottom')">✖</span><div id="popup-ad-bottom"></div></div>
+  <div id="popup-left" class="popup-ad left"><span class="close-btn" onclick="closePopupAd('left')">✖</span><div id="popup-ad-left"></div></div>
+  <div id="popup-right" class="popup-ad right"><span class="close-btn" onclick="closePopupAd('right')">✖</span><div id="popup-ad-right"></div></div>
+
+  <!-- APP CONTAINER -->
+  <div id="app"></div>
+
+  <!-- FIREBASE + MAIN SCRIPT -->
+  <script type="module" src="firebase-config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
