@@ -30,7 +30,7 @@ function showLoginPage() {
   loadAdContent();
 }
 
-// LOGIN HANDLER (updated)
+// LOGIN HANDLER (fixed redirect logic)
 function login() {
   const email = document.getElementById("email").value;
   const wallet = document.getElementById("wallet").value;
@@ -42,9 +42,12 @@ function login() {
   currentUser = { email, wallet, password, joined: Date.now() };
   localStorage.setItem("user", JSON.stringify(currentUser));
 
-  window.dbSet(window.dbRef(window.db, 'users/' + wallet), currentUser)
-    .then(() => showMiningPage())
-    .catch(() => alert("Firebase error"));
+  // Save to Firebase, but redirect immediately
+  if (window.dbSet && window.dbRef && window.db) {
+    window.dbSet(window.dbRef(window.db, 'users/' + wallet), currentUser);
+  }
+
+  showMiningPage();
 }
 
 // MAIN MINING PAGE
