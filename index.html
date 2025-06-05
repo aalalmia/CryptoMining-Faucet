@@ -1,1201 +1,1288 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CryptoFaucetMining</title>
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-:root {
---neon-blue: #00f3ff;
---neon-purple: #bf00ff;
---neon-green: #00ff41;
---dark-bg: #0a0a0a;
---card-bg: rgba(20, 20, 20, 0.8);
-}
-* {
-box-sizing: border-box;
-}
-body {
-font-family: 'Orbitron', monospace;
-background: linear-gradient(45deg, #0a0a0a, #1a1a2e, #16213e);
-background-size: 400% 400%;
-animation: gradientShift 15s ease infinite;
-color: white;
-overflow-x: hidden;
-}
-@keyframes gradientShift {
-0% { background-position: 0% 50%; }
-50% { background-position: 100% 50%; }
-100% { background-position: 0% 50%; }
-}
-.neon-glow {
-text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue), 0 0 15px var(--neon-blue);
-}
-.floating-btn {
-position: relative;
-animation: float 3s ease-in-out infinite;
-background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
-border: 2px solid var(--neon-blue);
-box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
-transition: all 0.3s ease;
-}
-.floating-btn:hover {
-transform: translateY(-5px);
-box-shadow: 0 0 30px rgba(0, 243, 255, 0.8);
-}
-@keyframes float {
-0%, 100% { transform: translateY(0px); }
-50% { transform: translateY(-10px); }
-}
-.card-neon {
-background: var(--card-bg);
-border: 2px solid var(--neon-blue);
-border-radius: 15px;
-box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
-backdrop-filter: blur(10px);
-}
-.progress-bar {
-background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
-height: 20px;
-border-radius: 10px;
-transition: width 0.3s ease;
-box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
-}
-.mining-character {
-width: 100px;
-height: 100px;
-background: radial-gradient(circle, #ffd700, #ffb347);
-border-radius: 50%;
-position: relative;
-margin: 20px auto;
-animation: mining 2s ease-in-out infinite;
-}
-.mining-character.jumping {
-animation: jumping 1s ease-in-out infinite;
-}
-@keyframes mining {
-0%, 100% { transform: rotate(-5deg) translateY(0px); }
-50% { transform: rotate(5deg) translateY(-5px); }
-}
-@keyframes jumping {
-0%, 100% { transform: translateY(0px) scale(1); }
-50% { transform: translateY(-15px) scale(1.1); }
-}
-.wheel-container {
-width: 300px;
-height: 300px;
-position: relative;
-margin: 20px auto;
-}
-.wheel {
-width: 100%;
-height: 100%;
-border-radius: 50%;
-position: relative;
-transition: transform 3s cubic-bezier(0.23, 1, 0.32, 1);
-overflow: hidden;
-border: 3px solid var(--neon-blue);
-box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
-}
-.wheel-segment {
-position: absolute;
-width: 50%;
-height: 50%;
-transform-origin: right bottom;
-display: flex;
-align-items: center;
-justify-content: center;
-font-weight: bold;
-font-size: 11px;
-color: white;
-text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-clip-path: polygon(0 0, 100% 0, 80% 100%, 0 100%);
-}
-.wheel-pointer {
-position: absolute;
-top: -15px;
-left: 50%;
-transform: translateX(-50%);
-width: 0;
-height: 0;
-border-left: 15px solid transparent;
-border-right: 15px solid transparent;
-border-top: 30px solid var(--neon-blue);
-z-index: 10;
-filter: drop-shadow(0 0 10px var(--neon-blue));
-}
-.popup-ad {
-position: fixed;
-background: var(--card-bg);
-border: 2px solid var(--neon-purple);
-border-radius: 10px;
-z-index: 1000;
-display: none;
-animation: slideIn 0.5s ease;
-}
-@keyframes slideIn {
-from { opacity: 0; transform: scale(0.8); }
-to { opacity: 1; transform: scale(1); }
-}
-.popup-ad.top { top: 10px; left: 50%; transform: translateX(-50%); width: 300px; height: 100px; }
-.popup-ad.bottom { bottom: 10px; left: 50%; transform: translateX(-50%); width: 300px; height: 100px; }
-.popup-ad.left { left: 10px; top: 50%; transform: translateY(-50%); width: 100px; height: 300px; }
-.popup-ad.right { right: 10px; top: 50%; transform: translateY(-50%); width: 100px; height: 300px; }
-.close-btn {
-position: absolute;
-top: 10px;
-right: 15px;
-background: var(--neon-purple);
-color: white;
-border: none;
-width: 30px;
-height: 30px;
-border-radius: 50%;
-cursor: pointer;
-font-size: 18px;
-font-weight: bold;
-display: flex;
-align-items: center;
-justify-content: center;
-box-shadow: 0 0 10px rgba(191, 0, 255, 0.5);
-transition: all 0.3s ease;
-z-index: 10;
-}
-.close-btn:hover {
-background: var(--neon-blue);
-box-shadow: 0 0 15px rgba(0, 243, 255, 0.8);
-transform: scale(1.1);
-}
-.popup-close-btn {
-position: absolute;
-top: 5px;
-right: 5px;
-background: var(--neon-purple);
-color: white;
-border: none;
-width: 25px;
-height: 25px;
-border-radius: 50%;
-cursor: pointer;
-display: none;
-}
-.modal {
-position: fixed;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: rgba(0, 0, 0, 0.8);
-display: none;
-justify-content: center;
-align-items: center;
-z-index: 2000;
-}
-.modal-content {
-background: var(--card-bg);
-border: 2px solid var(--neon-blue);
-border-radius: 15px;
-padding: 30px;
-max-width: 500px;
-width: 90%;
-position: relative;
-max-height: 90vh;
-overflow-y: auto;
-}
-.timer-display {
-position: absolute;
-top: 10px;
-right: 60px;
-background: var(--neon-green);
-color: black;
-padding: 5px 10px;
-border-radius: 5px;
-font-weight: bold;
-}
-.ads-placeholder {
-background: linear-gradient(45deg, #333, #555);
-border: 2px dashed var(--neon-blue);
-display: flex;
-align-items: center;
-justify-content: center;
-color: var(--neon-blue);
-font-size: 14px;
-text-align: center;
-padding: 20px;
-}
-.input-neon {
-background: rgba(0, 0, 0, 0.7);
-border: 2px solid var(--neon-blue);
-border-radius: 8px;
-color: white;
-padding: 10px;
-transition: all 0.3s ease;
-}
-.input-neon:focus {
-outline: none;
-border-color: var(--neon-purple);
-box-shadow: 0 0 10px rgba(191, 0, 255, 0.5);
-}
-.hidden { display: none !important; }
-.error-text { color: #ff4757; }
-.success-text { color: var(--neon-green); }
-.page {
-min-height: 100vh;
-padding: 20px;
-}
-.title-clickable {
-cursor: pointer;
-user-select: none;
-transition: all 0.3s ease;
-}
-.title-clickable:active {
-transform: scale(0.98);
-}
-.admin-hint {
-position: fixed;
-bottom: 20px;
-right: 20px;
-background: var(--card-bg);
-border: 1px solid var(--neon-blue);
-border-radius: 8px;
-padding: 10px;
-font-size: 12px;
-color: var(--neon-blue);
-opacity: 0;
-transition: opacity 0.3s ease;
-z-index: 1500;
-max-width: 200px;
-}
-.admin-hint.show {
-opacity: 1;
-}
-@media (max-width: 768px) {
-.popup-ad.left, .popup-ad.right { display: none !important; }
-.wheel-container { width: 250px; height: 250px; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoFaucetMining</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-purple: #bf00ff;
+            --neon-green: #00ff41;
+            --dark-bg: #0a0a0a;
+            --card-bg: rgba(20, 20, 20, 0.8);
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(45deg, #0a0a0a, #1a1a2e, #16213e);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .neon-glow {
+            text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue), 0 0 15px var(--neon-blue);
+        }
+        
+        .floating-btn {
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .floating-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.8);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .card-neon {
+            background: var(--card-bg);
+            border: 2px solid var(--neon-blue);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .progress-bar {
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+            height: 20px;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+        
+        .mining-character {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #ffd700, #ffb347);
+            border-radius: 50%;
+            position: relative;
+            margin: 20px auto;
+            animation: mining 2s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .mining-character.jumping {
+            animation: jumping 1s ease-in-out infinite;
+        }
+        
+        @keyframes mining {
+            0%, 100% { transform: rotate(-5deg) translateY(0px); }
+            50% { transform: rotate(5deg) translateY(-5px); }
+        }
+        
+        @keyframes jumping {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-15px) scale(1.1); }
+        }
+        
+        .wheel-container {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            margin: 20px auto;
+        }
+        
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            transition: transform 3s cubic-bezier(0.23, 1, 0.32, 1);
+            overflow: hidden;
+            border: 3px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+            background: conic-gradient(
+                #ff6b6b 0deg 32.7deg,
+                #4ecdc4 32.7deg 65.4deg,
+                #45b7d1 65.4deg 98.1deg,
+                #96ceb4 98.1deg 130.8deg,
+                #feca57 130.8deg 163.5deg,
+                #ff9ff3 163.5deg 196.2deg,
+                #54a0ff 196.2deg 228.9deg,
+                #5f27cd 228.9deg 261.6deg,
+                #00d2d3 261.6deg 294.3deg,
+                #ff6b6b 294.3deg 327deg,
+                #4ecdc4 327deg 360deg
+            );
+        }
+        
+        .wheel-segment {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 11px;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            pointer-events: none;
+        }
+        
+        .segment-text {
+            position: absolute;
+            transform-origin: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            white-space: nowrap;
+            text-align: center;
+            width: 80px;
+        }
+        
+        .wheel-pointer {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid var(--neon-blue);
+            z-index: 10;
+            filter: drop-shadow(0 0 10px var(--neon-blue));
+        }
+        
+        .popup-ad {
+            position: fixed;
+            background: var(--card-bg);
+            border: 2px solid var(--neon-purple);
+            border-radius: 10px;
+            z-index: 1000;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        .popup-ad.top { top: 10px; left: 50%; transform: translateX(-50%); width: 300px; height: 100px; }
+        .popup-ad.bottom { bottom: 10px; left: 50%; transform: translateX(-50%); width: 300px; height: 100px; }
+        .popup-ad.left { left: 10px; top: 50%; transform: translateY(-50%); width: 100px; height: 300px; }
+        .popup-ad.right { right: 10px; top: 50%; transform: translateY(-50%); width: 100px; height: 300px; }
+        
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: var(--neon-purple);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(191, 0, 255, 0.5);
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .close-btn:hover {
+            background: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.8);
+            transform: scale(1.1);
+        }
+        
+        .popup-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--neon-purple);
+            color: white;
+            border: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            z-index: 10;
+        }
+        
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        
+        .modal-content {
+            background: var(--card-bg);
+            border: 2px solid var(--neon-blue);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .timer-display {
+            position: absolute;
+            top: 10px;
+            right: 60px;
+            background: var(--neon-green);
+            color: black;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            z-index: 100;
+        }
+        
+        .ads-placeholder {
+            background: linear-gradient(45deg, #333, #555);
+            border: 2px dashed var(--neon-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-blue);
+            font-size: 14px;
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .input-neon {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--neon-blue);
+            border-radius: 8px;
+            color: white;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .input-neon:focus {
+            outline: none;
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 10px rgba(191, 0, 255, 0.5);
+        }
+        
+        .hidden { display: none !important; }
+        .error-text { color: #ff4757; }
+        .success-text { color: var(--neon-green); }
+        
+        .page {
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .clickable-title {
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+        
+        .clickable-title:hover {
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .popup-ad.left, .popup-ad.right { display: none !important; }
+            .wheel-container { width: 250px; height: 250px; }
+        }
+    </style>
 </head>
 <body>
-<!-- Admin Hint Tooltip -->
-<div id="adminHint" class="admin-hint">
-Tap title 5 times quickly for admin access
-</div>
-
-<!-- Login Page -->
-<div id="loginPage" class="page flex items-center justify-center">
-<div class="w-full max-w-4xl">
-<!-- Login Page Ads -->
-<div class="flex justify-center gap-4 mb-8">
-<div id="loginAd1" class="ads-placeholder" style="width: 300px; height: 250px;">
-Login Ad Slot 1<br>300x250
-</div>
-<div id="loginAd2" class="ads-placeholder" style="width: 300px; height: 250px;">
-Login Ad Slot 2<br>300x250
-</div>
-</div>
-<!-- Login Content -->
-<div class="card-neon p-8 max-w-md mx-auto">
-<h1 id="loginTitle" class="title-clickable text-3xl font-bold text-center mb-2 neon-glow">Welcome to Crypto Faucet Mining</h1>
-<p class="text-center text-lg mb-8 text-gray-300">Let's Start</p>
-<form id="loginForm" class="space-y-6">
-<div>
-<label class="block text-sm font-medium mb-2">Email:</label>
-<input type="email" id="email" class="input-neon w-full" required>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">Cwallet: (Enter carefully, can't be changed)</label>
-<input type="text" id="cwallet" class="input-neon w-full" required>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">Password: (minimum 8 digits and strong)</label>
-<input type="password" id="password" class="input-neon w-full" required>
-<div id="passwordError" class="error-text text-sm mt-1 hidden">Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character</div>
-</div>
-<button type="submit" class="floating-btn w-full py-3 px-6 rounded-lg text-white font-bold text-lg">
-Let's Start
-</button>
-</form>
-</div>
-</div>
-</div>
-
-<!-- Main Page -->
-<div id="mainPage" class="page hidden">
-<div class="container mx-auto max-w-6xl">
-<!-- Main Navigation -->
-<div class="flex justify-center gap-4 mb-8">
-<button id="luckyAdsBtn" class="floating-btn px-6 py-3 rounded-lg text-white font-bold">
-<i class="fas fa-ad mr-2"></i>Lucky Ads
-</button>
-<button id="luckyCashBtn" class="floating-btn px-6 py-3 rounded-lg text-white font-bold">
-<i class="fas fa-dollar-sign mr-2"></i>Lucky Cash
-</button>
-<button id="bwalletBtn" class="floating-btn px-6 py-3 rounded-lg text-white font-bold">
-<i class="fas fa-wallet mr-2"></i>Bwallet
-</button>
-</div>
-
-<!-- Try Your Luck Button -->
-<div class="text-center mb-8">
-<button id="tryLuckBtn" class="floating-btn px-8 py-4 rounded-lg text-white font-bold text-xl">
-<i class="fas fa-dice mr-2"></i>Try Your Luck
-</button>
-</div>
-
-<!-- Mining Character and Progress -->
-<div class="card-neon p-8 mb-8 text-center">
-<div id="miningCharacter" class="mining-character">
-<i class="fas fa-hard-hat text-4xl text-black absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></i>
-</div>
-<div class="mb-6">
-<div class="bg-gray-700 rounded-full h-6 mb-2">
-<div id="progressBar" class="progress-bar h-6 rounded-full" style="width: 0%"></div>
-</div>
-<p class="text-sm text-gray-300">Progress: <span id="progressText">0%</span> | Time remaining: <span id="timeRemaining">1:00</span></p>
-</div>
-
-<!-- Captcha Section -->
-<div id="captchaSection" class="hidden">
-<div class="mb-4">
-<p class="text-lg mb-2">Solve this math problem:</p>
-<p id="captchaQuestion" class="text-2xl font-bold neon-glow mb-4"></p>
-<input type="number" id="captchaAnswer" class="input-neon w-32 text-center" placeholder="Answer">
-<button id="captchaSubmit" class="floating-btn ml-4 px-4 py-2 rounded">Submit</button>
-</div>
-</div>
-
-<!-- Claim Reward Button -->
-<div id="claimSection" class="hidden">
-<button id="claimRewardBtn" class="floating-btn px-8 py-4 rounded-lg text-white font-bold text-xl">
-<i class="fas fa-gift mr-2"></i>Claim Your Reward
-</button>
-</div>
-</div>
-</div>
-</div>
-
-<!-- Admin Page -->
-<div id="adminPage" class="page hidden">
-<div class="container mx-auto max-w-6xl">
-<h1 class="text-3xl font-bold text-center mb-8 neon-glow">Admin Panel</h1>
-<!-- Back to Main -->
-<div class="text-center mb-8">
-<button id="backToMainBtn" class="floating-btn px-6 py-3 rounded-lg text-white font-bold">
-<i class="fas fa-arrow-left mr-2"></i>Back to Main
-</button>
-</div>
-<!-- Ad Management -->
-<div class="card-neon p-8 mb-8">
-<h2 class="text-2xl font-bold mb-6 neon-glow">Ad Management</h2>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<div>
-<label class="block text-sm font-medium mb-2">Login Page Ad 1:</label>
-<textarea id="adminLoginAd1" class="input-neon w-full mb-2 h-20" placeholder="Enter ad content (HTML)"></textarea>
-<button onclick="saveAd('loginAd1', 'adminLoginAd1')" class="floating-btn px-4 py-2 rounded">Save</button>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">Login Page Ad 2:</label>
-<textarea id="adminLoginAd2" class="input-neon w-full mb-2 h-20" placeholder="Enter ad content (HTML)"></textarea>
-<button onclick="saveAd('loginAd2', 'adminLoginAd2')" class="floating-btn px-4 py-2 rounded">Save</button>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">Lucky Ads Content:</label>
-<textarea id="adminLuckyAd" class="input-neon w-full mb-2 h-20" placeholder="Enter ad content (HTML)"></textarea>
-<button onclick="saveAd('luckyAd', 'adminLuckyAd')" class="floating-btn px-4 py-2 rounded">Save</button>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">Claim Reward Ad:</label>
-<textarea id="adminClaimAd" class="input-neon w-full mb-2 h-20" placeholder="Enter ad content (HTML)"></textarea>
-<button onclick="saveAd('claimAd', 'adminClaimAd')" class="floating-btn px-4 py-2 rounded">Save</button>
-</div>
-</div>
-</div>
-<!-- Withdrawal Requests -->
-<div class="card-neon p-8">
-<h2 class="text-2xl font-bold mb-6 neon-glow">Withdrawal Requests</h2>
-<div id="withdrawalRequests" class="space-y-4">
-<p class="text-gray-400">No withdrawal requests at the moment.</p>
-</div>
-</div>
-</div>
-</div>
-
-<!-- Popup Ads -->
-<div id="popupTopAd" class="popup-ad top">
-<button class="popup-close-btn" onclick="closePopupAd('popupTopAd')">&times;</button>
-<div class="ads-placeholder w-full h-full">Top Ad<br>300x100</div>
-</div>
-<div id="popupBottomAd" class="popup-ad bottom">
-<button class="popup-close-btn" onclick="closePopupAd('popupBottomAd')">&times;</button>
-<div class="ads-placeholder w-full h-full">Bottom Ad<br>300x100</div>
-</div>
-<div id="popupLeftAd" class="popup-ad left">
-<button class="popup-close-btn" onclick="closePopupAd('popupLeftAd')">&times;</button>
-<div class="ads-placeholder w-full h-full">Left<br>100x300</div>
-</div>
-<div id="popupRightAd" class="popup-ad right">
-<button class="popup-close-btn" onclick="closePopupAd('popupRightAd')">&times;</button>
-<div class="ads-placeholder w-full h-full">Right<br>100x300</div>
-</div>
-
-<!-- Modals -->
-<!-- Bwallet Modal -->
-<div id="bwalletModal" class="modal">
-<div class="modal-content">
-<button class="close-btn" onclick="closeModal('bwalletModal')">&times;</button>
-<h2 class="text-2xl font-bold mb-6 neon-glow">Bwallet</h2>
-<div class="space-y-4">
-<div>
-<label class="block text-sm font-medium mb-2">Cwallet ID:</label>
-<input type="text" id="bwalletCwallet" class="input-neon w-full" readonly>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">Current Balance:</label>
-<p class="text-2xl font-bold neon-glow"><span id="bwalletBalance">0</span> BabyDoge</p>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">Withdrawal Amount:</label>
-<input type="number" id="bwalletWithdrawAmount" class="input-neon w-full" min="10000" placeholder="Minimum 10,000">
-</div>
-<button id="bwalletWithdrawBtn" class="floating-btn w-full py-3 rounded-lg text-white font-bold">
-Withdraw
-</button>
-<p id="bwalletCondition" class="text-center">
-You need: <span id="bwalletProgress">0</span>/10,000 BabyDoge to withdraw
-</p>
-<p id="bwalletPending" class="text-center success-text hidden">Withdrawal is pending...</p>
-</div>
-</div>
-</div>
-
-<!-- Lucky Cash Modal -->
-<div id="luckyCashModal" class="modal">
-<div class="modal-content">
-<button class="close-btn" onclick="closeModal('luckyCashModal')">&times;</button>
-<h2 class="text-2xl font-bold mb-6 neon-glow">Lucky Cash</h2>
-<div class="space-y-4">
-<div>
-<label class="block text-sm font-medium mb-2">Cwallet ID:</label>
-<input type="text" id="luckyCashCwallet" class="input-neon w-full" readonly>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">Current Balance:</label>
-<p class="text-2xl font-bold neon-glow">$<span id="luckyCashBalance">0.00</span></p>
-</div>
-<div>
-<label class="block text-sm font-medium mb-2">Withdrawal Amount:</label>
-<input type="number" id="luckyCashWithdrawAmount" class="input-neon w-full" min="2.5" step="0.01" placeholder="Minimum $2.50">
-</div>
-<button id="luckyCashWithdrawBtn" class="floating-btn w-full py-3 rounded-lg text-white font-bold">
-Withdraw
-</button>
-<div id="luckyCashConditions" class="text-center space-y-2">
-<p id="luckyCashAmountCondition">1. You need: $<span id="luckyCashProgress">0.00</span>/2.50 to withdraw</p>
-<p id="luckyCashAdsCondition">2. You watched: <span id="luckyCashAdsProgress">0</span>/20 Lucky Ads</p>
-</div>
-<p id="luckyCashPending" class="text-center success-text hidden">Withdrawal is pending...</p>
-</div>
-</div>
-</div>
-
-<!-- Try Your Luck Modal -->
-<div id="tryLuckModal" class="modal">
-<div class="modal-content">
-<button class="close-btn" onclick="closeModal('tryLuckModal')">&times;</button>
-<h2 class="text-2xl font-bold mb-6 neon-glow text-center">Try Your Luck</h2>
-<div class="wheel-container">
-<div class="wheel-pointer"></div>
-<div id="wheelSpin" class="wheel">
-<!-- Wheel segments will be created dynamically -->
-</div>
-</div>
-<div class="text-center">
-<button id="spinBtn" class="floating-btn px-8 py-4 rounded-lg text-white font-bold text-xl">
-<span id="spinBtnText">Free Spin</span>
-</button>
-<p id="wheelResult" class="mt-4 text-xl font-bold neon-glow hidden"></p>
-</div>
-</div>
-</div>
-
-<!-- Lucky Ads Modal -->
-<div id="luckyAdsModal" class="modal">
-<div class="modal-content">
-<div class="timer-display" id="luckyAdsTimer">15</div>
-<h2 class="text-2xl font-bold mb-6 neon-glow text-center">Lucky Ads</h2>
-<div id="luckyAdsContent" class="ads-placeholder" style="width: 100%; height: 300px; margin-bottom: 20px;">
-Lucky Ads Content<br>15 Second Timer
-</div>
-<button id="luckyAdsClaimBtn" class="floating-btn w-full py-3 rounded-lg text-white font-bold hidden">
-Claim $0.01
-</button>
-</div>
-</div>
-
-<!-- Claim Reward Ads Modal -->
-<div id="claimAdsModal" class="modal">
-<div class="modal-content">
-<div class="timer-display" id="claimAdsTimer">15</div>
-<h2 class="text-2xl font-bold mb-6 neon-glow text-center">Watch Ad to Claim Reward</h2>
-<div id="claimAdsContent" class="ads-placeholder" style="width: 100%; height: 300px; margin-bottom: 20px;">
-Reward Ad Content<br>15 Second Timer
-</div>
-<button id="claimAdsClaimBtn" class="floating-btn w-full py-3 rounded-lg text-white font-bold hidden">
-Claim 10,000 BabyDoge
-</button>
-</div>
-</div>
-
-<script>
-// Global Variables
-let userData = {
-email: '',
-cwallet: '',
-bwalletBalance: 0,
-luckyCashBalance: 0,
-luckyAdsWatched: 0,
-isFirstSpin: true,
-spinRequiredAds: 0,
-totalSpins: 0
-};
-
-let progressTimer = null;
-let progressSeconds = 300; // 5 minutes
-let popupAdTimers = {};
-let popupAdStates = {};
-
-// Admin access variables
-let tapCount = 0;
-let tapTimer = null;
-const requiredTaps = 5;
-const tapTimeWindow = 3000; // 3 seconds
-
-// Fixed wheel segments configuration - exactly as requested
-const wheelSegments = [
-{prize: '0.01$', angle: 0, color: '#ff6b6b'},
-{prize: '0.03$', angle: 32.7, color: '#4ecdc4'},
-{prize: '0.05$', angle: 65.4, color: '#45b7d1'},
-{prize: 'Try Again', angle: 98.1, color: '#96ceb4'},
-{prize: '0.1$', angle: 130.8, color: '#feca57'},
-{prize: '0.3$', angle: 163.5, color: '#ff9ff3'},
-{prize: '0.5$', angle: 196.2, color: '#54a0ff'},
-{prize: '3x Spin', angle: 228.9, color: '#5f27cd'},
-{prize: '1$', angle: 261.6, color: '#00d2d3'},
-{prize: '3$', angle: 294.3, color: '#ff6b6b'},
-{prize: '5$', angle: 327, color: '#4ecdc4'}
-];
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-loadUserData();
-setupEventListeners();
-createWheelSegments();
-setupAdminAccess();
-
-// Add admin access (hidden feature) - Keep original keyboard shortcut
-document.addEventListener('keydown', function(e) {
-if (e.ctrlKey && e.altKey && e.code === 'KeyA') {
-showPage('adminPage');
-}
-});
-});
-
-// Setup admin access for mobile and desktop
-function setupAdminAccess() {
-const loginTitle = document.getElementById('loginTitle');
-const adminHint = document.getElementById('adminHint');
-let hintTimer = null;
-
-// Mobile touch events
-loginTitle.addEventListener('touchstart', handleTitleTap, {passive: true});
-loginTitle.addEventListener('touchend', function(e) {
-e.preventDefault(); // Prevent click event on mobile
-}, {passive: false});
-
-// Desktop click events
-loginTitle.addEventListener('click', handleTitleTap);
-
-// Show hint on long press (mobile) or hover (desktop)
-let longPressTimer = null;
-
-loginTitle.addEventListener('touchstart', function() {
-longPressTimer = setTimeout(() => {
-showAdminHint();
-}, 1000);
-});
-
-loginTitle.addEventListener('touchend', function() {
-if (longPressTimer) {
-clearTimeout(longPressTimer);
-}
-});
-
-loginTitle.addEventListener('mouseenter', function() {
-showAdminHint();
-});
-
-loginTitle.addEventListener('mouseleave', function() {
-hideAdminHint();
-});
-
-function showAdminHint() {
-adminHint.classList.add('show');
-if (hintTimer) clearTimeout(hintTimer);
-hintTimer = setTimeout(() => {
-hideAdminHint();
-}, 3000);
-}
-
-function hideAdminHint() {
-adminHint.classList.remove('show');
-if (hintTimer) clearTimeout(hintTimer);
-}
-}
-
-function handleTitleTap(e) {
-e.preventDefault();
-tapCount++;
-
-// Clear existing timer
-if (tapTimer) {
-clearTimeout(tapTimer);
-}
-
-// Visual feedback
-const title = e.target;
-title.style.transform = 'scale(0.95)';
-setTimeout(() => {
-title.style.transform = '';
-}, 100);
-
-// Check if we've reached required taps
-if (tapCount >= requiredTaps) {
-tapCount = 0;
-showPage('adminPage');
-// Show success feedback
-title.style.boxShadow = '0 0 20px var(--neon-green)';
-setTimeout(() => {
-title.style.boxShadow = '';
-}, 500);
-return;
-}
-
-// Reset tap count after time window
-tapTimer = setTimeout(() => {
-tapCount = 0;
-}, tapTimeWindow);
-
-// Show progress feedback
-const progress = (tapCount / requiredTaps) * 100;
-title.style.background = `linear-gradient(90deg, var(--neon-blue) ${progress}%, transparent ${progress}%)`;
-title.style.backgroundClip = 'text';
-title.style.webkitBackgroundClip = 'text';
-
-setTimeout(() => {
-title.style.background = '';
-title.style.backgroundClip = '';
-title.style.webkitBackgroundClip = '';
-}, 200);
-}
-
-// Create wheel segments dynamically with proper positioning
-function createWheelSegments() {
-const wheel = document.getElementById('wheelSpin');
-wheel.innerHTML = '';
-wheelSegments.forEach((segment, index) => {
-const segmentDiv = document.createElement('div');
-segmentDiv.className = 'wheel-segment';
-segmentDiv.style.transform = `rotate(${segment.angle}deg)`;
-segmentDiv.style.background = segment.color;
-segmentDiv.textContent = segment.prize;
-wheel.appendChild(segmentDiv);
-});
-}
-
-// Setup Event Listeners
-function setupEventListeners() {
-// Login Form
-document.getElementById('loginForm').addEventListener('submit', handleLogin);
-// Main Page Buttons
-document.getElementById('luckyAdsBtn').addEventListener('click', () => showModal('luckyAdsModal'));
-document.getElementById('luckyCashBtn').addEventListener('click', () => showModal('luckyCashModal'));
-document.getElementById('bwalletBtn').addEventListener('click', () => showModal('bwalletModal'));
-document.getElementById('tryLuckBtn').addEventListener('click', () => showModal('tryLuckModal'));
-// Captcha
-document.getElementById('captchaSubmit').addEventListener('click', checkCaptcha);
-// Claim Reward
-document.getElementById('claimRewardBtn').addEventListener('click', () => showModal('claimAdsModal'));
-// Withdrawal Buttons
-document.getElementById('bwalletWithdrawBtn').addEventListener('click', handleBwalletWithdraw);
-document.getElementById('luckyCashWithdrawBtn').addEventListener('click', handleLuckyCashWithdraw);
-// Spin Wheel
-document.getElementById('spinBtn').addEventListener('click', spinWheel);
-// Lucky Ads Claim
-document.getElementById('luckyAdsClaimBtn').addEventListener('click', claimLuckyAds);
-document.getElementById('claimAdsClaimBtn').addEventListener('click', claimRewardAds);
-// Admin
-document.getElementById('backToMainBtn').addEventListener('click', () => showPage('mainPage'));
-}
-
-// Login Handler
-function handleLogin(e) {
-e.preventDefault();
-const email = document.getElementById('email').value;
-const cwallet = document.getElementById('cwallet').value;
-const password = document.getElementById('password').value;
-if (!validatePassword(password)) {
-document.getElementById('passwordError').classList.remove('hidden');
-return;
-}
-userData.email = email;
-userData.cwallet = cwallet;
-saveUserData();
-showPage('mainPage');
-startProgressTimer();
-initializePopupAds();
-updateAllDisplays();
-}
-
-// Password Validation
-function validatePassword(password) {
-const minLength = 8;
-const hasUpper = /[A-Z]/.test(password);
-const hasLower = /[a-z]/.test(password);
-const hasNumber = /\d/.test(password);
-const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-return password.length >= minLength && hasUpper && hasLower && hasNumber && hasSpecial;
-}
-
-// Page Navigation
-function showPage(pageId) {
-document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
-document.getElementById(pageId).classList.remove('hidden');
-}
-
-// Modal Management
-function showModal(modalId) {
-document.getElementById(modalId).style.display = 'flex';
-if (modalId === 'luckyAdsModal') {
-startAdTimer('luckyAdsTimer', 'luckyAdsClaimBtn');
-} else if (modalId === 'claimAdsModal') {
-startAdTimer('claimAdsTimer', 'claimAdsClaimBtn');
-}
-}
-
-function closeModal(modalId) {
-document.getElementById(modalId).style.display = 'none';
-}
-
-// Progress Timer
-function startProgressTimer() {
-if (progressTimer) clearInterval(progressTimer);
-progressSeconds = 300; // Reset to 1 minutes
-progressTimer = setInterval(() => {
-progressSeconds--;
-const percentage = ((300 - progressSeconds) / 300) * 100;
-document.getElementById('progressBar').style.width = percentage + '%';
-document.getElementById('progressText').textContent = Math.round(percentage) + '%';
-const minutes = Math.floor(progressSeconds / 60);
-const seconds = progressSeconds % 60;
-document.getElementById('timeRemaining').textContent = 
-`${minutes}:${seconds.toString().padStart(2, '0')}`;
-
-// Update mining character animation
-const character = document.getElementById('miningCharacter');
-if (progressSeconds <= 0) {
-character.classList.add('jumping');
-clearInterval(progressTimer);
-showCaptcha();
-} else {
-character.classList.remove('jumping');
-}
-}, 1000);
-}
-
-// Captcha System
-function showCaptcha() {
-const num1 = Math.floor(Math.random() * 20) + 1;
-const num2 = Math.floor(Math.random() * 20) + 1;
-const operation = Math.random() > 0.5 ? '+' : '-';
-let question, answer;
-if (operation === '+') {
-question = `${num1} + ${num2}`;
-answer = num1 + num2;
-} else {
-if (num1 < num2) [num1, num2] = [num2, num1]; // Ensure positive result
-question = `${num1} - ${num2}`;
-answer = num1 - num2;
-}
-document.getElementById('captchaQuestion').textContent = question;
-document.getElementById('captchaQuestion').dataset.answer = answer;
-document.getElementById('captchaSection').classList.remove('hidden');
-}
-
-function checkCaptcha() {
-const userAnswer = parseInt(document.getElementById('captchaAnswer').value);
-const correctAnswer = parseInt(document.getElementById('captchaQuestion').dataset.answer);
-if (userAnswer === correctAnswer) {
-document.getElementById('captchaSection').classList.add('hidden');
-document.getElementById('claimSection').classList.remove('hidden');
-} else {
-alert('Incorrect answer. Please try again.');
-document.getElementById('captchaAnswer').value = '';
-}
-}
-
-// Ad Timer
-function startAdTimer(timerId, claimBtnId) {
-let seconds = 15;
-document.getElementById(timerId).textContent = seconds;
-document.getElementById(claimBtnId).classList.add('hidden');
-const timer = setInterval(() => {
-seconds--;
-document.getElementById(timerId).textContent = seconds;
-if (seconds <= 0) {
-clearInterval(timer);
-document.getElementById(claimBtnId).classList.remove('hidden');
-}
-}, 1000);
-}
-
-// Popup Ads Management
-function initializePopupAds() {
-const popupAds = ['popupTopAd', 'popupBottomAd', 'popupLeftAd', 'popupRightAd'];
-popupAds.forEach(adId => {
-popupAdStates[adId] = { closed: 0, permanent: false };
-showPopupAd(adId);
-});
-}
-
-function showPopupAd(adId) {
-if (popupAdStates[adId].permanent) return;
-const ad = document.getElementById(adId);
-const closeBtn = ad.querySelector('.popup-close-btn');
-ad.style.display = 'block';
-closeBtn.style.display = 'none';
-// Show close button after 10 seconds
-popupAdTimers[adId] = setTimeout(() => {
-closeBtn.style.display = 'block';
-}, 10000);
-}
-
-function closePopupAd(adId) {
-const ad = document.getElementById(adId);
-ad.style.display = 'none';
-popupAdStates[adId].closed++;
-if (popupAdStates[adId].closed >= 2) {
-popupAdStates[adId].permanent = true;
-} else {
-// Show again after 10 seconds
-setTimeout(() => showPopupAd(adId), 10000);
-}
-}
-
-// Fixed Wheel Spin with exact requirements
-function spinWheel() {
-const wheel = document.getElementById('wheelSpin');
-const btn = document.getElementById('spinBtn');
-const btnText = document.getElementById('spinBtnText');
-const result = document.getElementById('wheelResult');
-
-// Disable button during spin
-btn.disabled = true;
-btn.style.opacity = '0.5';
-
-let selectedPrize;
-let targetAngle;
-
-if (userData.isFirstSpin) {
-// First spin: Only $0.5 or $1 with 99% chance
-const firstSpinPrizes = ['0.5$', '1$'];
-selectedPrize = firstSpinPrizes[Math.floor(Math.random() * firstSpinPrizes.length)];
-console.log('First spin - Selected prize:', selectedPrize);
-} else {
-// Subsequent spins: 99% chance for low prizes, 1% for high prizes
-const rand = Math.random() * 100;
-if (rand < 99) {
-// 99% chance for low value prizes
-const lowPrizes = ['0.01$', '0.03$', '0.05$', 'Try Again'];
-selectedPrize = lowPrizes[Math.floor(Math.random() * lowPrizes.length)];
-} else {
-// 1% chance for high value prizes
-const highPrizes = ['0.1$', '0.3$', '0.5$', '3x Spin', '1$', '3$', '5$'];
-selectedPrize = highPrizes[Math.floor(Math.random() * highPrizes.length)];
-}
-console.log('Subsequent spin - Selected prize:', selectedPrize);
-}
-
-// Find the target segment
-const targetSegment = wheelSegments.find(segment => segment.prize === selectedPrize);
-if (!targetSegment) {
-console.error('Target segment not found for prize:', selectedPrize);
-return;
-}
-
-// Calculate precise rotation to land on target segment
-// The pointer is at the top, so we need to account for that
-const segmentCenter = targetSegment.angle + 16.35; // Center of each 32.7-degree segment
-const finalRotation = 1800 + (360 - segmentCenter); // Multiple spins + precise landing
-
-console.log('Target angle:', segmentCenter, 'Final rotation:', finalRotation);
-
-wheel.style.transform = `rotate(${finalRotation}deg)`;
-
-setTimeout(() => {
-result.textContent = `You won ${selectedPrize}!`;
-result.classList.remove('hidden');
-
-// Process the reward
-if (selectedPrize !== 'Try Again') {
-if (selectedPrize === '3x Spin') {
-// Enable 3 more free spins
-userData.spinRequiredAds = -3; // Negative means free spins
-console.log('3x Spin awarded - Free spins remaining:', Math.abs(userData.spinRequiredAds));
-} else {
-// Add cash reward
-const cashValue = parseFloat(selectedPrize.replace('$', ''));
-userData.luckyCashBalance += cashValue;
-console.log('Cash reward added:', cashValue, 'New balance:', userData.luckyCashBalance);
-}
-}
-
-// Update spin state
-if (userData.isFirstSpin) {
-userData.isFirstSpin = false;
-userData.totalSpins = 1;
-userData.spinRequiredAds = 15;
-btnText.textContent = 'Watch 15 Lucky Ads to Spin Again';
-console.log('First spin completed. Ads required:', userData.spinRequiredAds);
-} else {
-userData.totalSpins++;
-if (userData.spinRequiredAds < 0) {
-// Still have free spins from 3x Spin
-userData.spinRequiredAds++;
-if (userData.spinRequiredAds >= 0) {
-userData.spinRequiredAds = 15;
-btnText.textContent = 'Watch 15 Lucky Ads to Spin Again';
-} else {
-btnText.textContent = `Free Spin (${Math.abs(userData.spinRequiredAds)} remaining)`;
-btn.disabled = false;
-btn.style.opacity = '1';
-}
-} else {
-userData.spinRequiredAds = 15;
-btnText.textContent = 'Watch 15 Lucky Ads to Spin Again';
-}
-}
-
-saveUserData();
-updateAllDisplays();
-
-// Re-enable button if applicable
-if (userData.spinRequiredAds <= 0) {
-btn.disabled = false;
-btn.style.opacity = '1';
-}
-
-console.log('Spin completed. State:', {
-isFirstSpin: userData.isFirstSpin,
-totalSpins: userData.totalSpins,
-spinRequiredAds: userData.spinRequiredAds,
-luckyCashBalance: userData.luckyCashBalance
-});
-
-}, 3000);
-}
-
-// Lucky Ads Claim
-function claimLuckyAds() {
-userData.luckyAdsWatched++;
-userData.luckyCashBalance += 0.01; // Add $0.01 for watching Lucky Ad
-
-// Reduce required ads for spinning
-if (userData.spinRequiredAds > 0) {
-userData.spinRequiredAds--;
-}
-
-// Update spin button if ads requirement is met
-if (userData.spinRequiredAds <= 0 && !userData.isFirstSpin) {
-const spinBtn = document.getElementById('spinBtn');
-const spinBtnText = document.getElementById('spinBtnText');
-spinBtn.disabled = false;
-spinBtn.style.opacity = '1';
-spinBtnText.textContent = 'Spin Again';
-}
-
-closeModal('luckyAdsModal');
-saveUserData();
-updateAllDisplays();
-}
-
-// Claim Reward Ads
-function claimRewardAds() {
-userData.bwalletBalance += 10000;
-document.getElementById('claimSection').classList.add('hidden');
-document.getElementById('miningCharacter').classList.remove('jumping');
-closeModal('claimAdsModal');
-startProgressTimer();
-saveUserData();
-updateAllDisplays();
-}
-
-// Withdrawal Handlers
-function handleBwalletWithdraw() {
-const amount = parseInt(document.getElementById('bwalletWithdrawAmount').value);
-const condition = document.getElementById('bwalletCondition');
-const pending = document.getElementById('bwalletPending');
-if (userData.bwalletBalance < 10000 || amount < 10000) {
-condition.classList.add('error-text');
-return;
-}
-condition.classList.remove('error-text');
-pending.classList.remove('hidden');
-// Add to withdrawal requests
-addWithdrawalRequest('Bwallet', amount, userData.cwallet);
-setTimeout(() => {
-pending.classList.add('hidden');
-}, 10000);
-}
-
-function handleLuckyCashWithdraw() {
-const amount = parseFloat(document.getElementById('luckyCashWithdrawAmount').value);
-const amountCondition = document.getElementById('luckyCashAmountCondition');
-const adsCondition = document.getElementById('luckyCashAdsCondition');
-const pending = document.getElementById('luckyCashPending');
-if (userData.luckyCashBalance < 2.5 || userData.luckyAdsWatched < 20 || amount < 2.5) {
-if (userData.luckyCashBalance < 2.5) amountCondition.classList.add('error-text');
-if (userData.luckyAdsWatched < 20) adsCondition.classList.add('error-text');
-return;
-}
-amountCondition.classList.remove('error-text');
-adsCondition.classList.remove('error-text');
-pending.classList.remove('hidden');
-// Reset conditions
-userData.luckyCashBalance = 0;
-userData.luckyAdsWatched = 0;
-// Add to withdrawal requests
-addWithdrawalRequest('Lucky Cash', amount, userData.cwallet);
-setTimeout(() => {
-pending.classList.add('hidden');
-}, 10000);
-saveUserData();
-updateAllDisplays();
-}
-
-// Admin Functions
-function saveAd(adElementId, inputId) {
-const adContent = document.getElementById(inputId).value;
-if (adContent) {
-localStorage.setItem(`ad_${adElementId}`, adContent);
-alert('Ad content saved successfully!');
-loadAds();
-}
-}
-
-function loadAds() {
-// Load saved ad content
-const adElements = ['loginAd1', 'loginAd2', 'luckyAd', 'claimAd'];
-adElements.forEach(adId => {
-const savedContent = localStorage.getItem(`ad_${adId}`);
-if (savedContent) {
-const element = document.getElementById(adId === 'luckyAd' ? 'luckyAdsContent' : adId === 'claimAd' ? 'claimAdsContent' : adId);
-if (element) {
-element.innerHTML = savedContent;
-}
-}
-});
-}
-
-function addWithdrawalRequest(type, amount, cwallet) {
-const requests = JSON.parse(localStorage.getItem('withdrawalRequests') || '[]');
-requests.push({
-id: Date.now(),
-type: type,
-amount: amount,
-cwallet: cwallet,
-timestamp: new Date().toISOString(),
-status: 'pending'
-});
-localStorage.setItem('withdrawalRequests', JSON.stringify(requests));
-updateWithdrawalRequests();
-}
-
-function updateWithdrawalRequests() {
-const requests = JSON.parse(localStorage.getItem('withdrawalRequests') || '[]');
-const container = document.getElementById('withdrawalRequests');
-if (requests.length === 0) {
-container.innerHTML = '<p class="text-gray-400">No withdrawal requests at the moment.</p>';
-return;
-}
-container.innerHTML = requests.map(request => `
-<div class="card-neon p-4">
-<div class="flex justify-between items-center">
-<div>
-<p class="font-bold">${request.type} Withdrawal</p>
-<p>Amount: ${request.type === 'Bwallet' ? request.amount + ' BabyDoge' : '$' + request.amount}</p>
-<p>Cwallet: ${request.cwallet}</p>
-<p class="text-sm text-gray-400">${new Date(request.timestamp).toLocaleString()}</p>
-</div>
-<span class="text-yellow-400">${request.status}</span>
-</div>
-</div>
-`).join('');
-}
-
-// Update Displays
-function updateAllDisplays() {
-// Update Bwallet modal
-document.getElementById('bwalletCwallet').value = userData.cwallet;
-document.getElementById('bwalletBalance').textContent = userData.bwalletBalance.toLocaleString();
-document.getElementById('bwalletProgress').textContent = userData.bwalletBalance.toLocaleString();
-
-// Update Lucky Cash modal
-document.getElementById('luckyCashCwallet').value = userData.cwallet;
-document.getElementById('luckyCashBalance').textContent = userData.luckyCashBalance.toFixed(2);
-document.getElementById('luckyCashProgress').textContent = userData.luckyCashBalance.toFixed(2);
-document.getElementById('luckyCashAdsProgress').textContent = userData.luckyAdsWatched;
-
-// Update spin button
-const spinBtn = document.getElementById('spinBtn');
-const spinBtnText = document.getElementById('spinBtnText');
-
-if (userData.isFirstSpin) {
-spinBtnText.textContent = 'Free Spin';
-spinBtn.disabled = false;
-spinBtn.style.opacity = '1';
-} else if (userData.spinRequiredAds > 0) {
-spinBtnText.textContent = `Watch ${userData.spinRequiredAds} Lucky Ads to Spin Again`;
-spinBtn.disabled = true;
-spinBtn.style.opacity = '0.5';
-} else if (userData.spinRequiredAds < 0) {
-// Free spins from 3x Spin bonus
-spinBtnText.textContent = `Free Spin (${Math.abs(userData.spinRequiredAds)} remaining)`;
-spinBtn.disabled = false;
-spinBtn.style.opacity = '1';
-} else {
-spinBtnText.textContent = 'Spin Again';
-spinBtn.disabled = false;
-spinBtn.style.opacity = '1';
-}
-}
-
-// Data Management
-function saveUserData() {
-localStorage.setItem('cryptoFaucetUserData', JSON.stringify(userData));
-}
-
-function loadUserData() {
-const saved = localStorage.getItem('cryptoFaucetUserData');
-if (saved) {
-userData = { ...userData, ...JSON.parse(saved) };
-}
-loadAds();
-updateWithdrawalRequests();
-}
-</script>
+    <!-- Login Page -->
+    <div id="loginPage" class="page flex items-center justify-center">
+        <div class="w-full max-w-4xl">
+            <!-- Login Page Ads -->
+            <div class="flex justify-center gap-4 mb-8">
+                <div id="loginAd1" class="ads-placeholder" style="width: 300px; height: 250px;">
+                    Login Ad Slot 1<br>300x250
+                </div>
+                <div id="loginAd2" class="ads-placeholder" style="width: 300px; height: 250px;">
+                    Login Ad Slot 2<br>300x250
+                </div>
+            </div>
+            
+            <!-- Login Content -->
+            <div class="card-neon p-8 max-w-md mx-auto">
+                <h1 id="loginTitle" class="clickable-title text-3xl font-bold text-center mb-2 neon-glow">Welcome to Crypto Faucet Mining</h1>
+                <p class="text-center text-lg mb-8 text-gray-300">Let's Start</p>
+                
+                <form id="loginForm" class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Email:</label>
+                        <input type="email" id="email" class="input-neon w-full" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Cwallet: (Enter carefully, can't be changed)</label>
+                        <input type="text" id="cwallet" class="input-neon w-full" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Password: (minimum 8 digits and strong)</label>
+                        <input type="password" id="password" class="input-neon w-full" required>
+                        <div id="passwordError" class="error-text text-sm mt-1 hidden">Password must be at least 8 characters long and contain uppercase, lowercase, number, and special character</div>
+                    </div>
+                    <button type="submit" class="floating-btn w-full py-3 px-6 rounded-lg text-white font-bold text-lg">
+                        Let's Start
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Page -->
+    <div id="mainPage" class="page hidden">
+        <div class="container mx-auto max-w-6xl">
+            <!-- Main Navigation -->
+            <div class="flex justifyKwanzaa-center gap-4 mb-8">
+                <button id="luckyAdsBtn" class="floating-btn px-6 py-3 rounded-lg text-white font-bold">
+                    <i class="fas fa-ad mr-2"></i>Lucky Ads
+                </button>
+                <button id="luckyCashBtn" class="floating-btn px-6 py-3 rounded-lg text-white font-bold">
+                    <i class="fas fa-dollar-sign mr-2"></i>Lucky Cash
+                </button>
+                <button id="bwalletBtn" class="floating-btn px-6 py-3 rounded-lg text-white font-bold">
+                    <i class="fas fa-wallet mr-2"></i>Bwallet
+                </button>
+            </div>
+            
+            <!-- Try Your Luck Button -->
+            <div class="text-center mb-8">
+                <button id="tryLuckBtn" class="floating-btn px-8 py-4 rounded-lg text-white font-bold text-xl">
+                    <i class="fas fa-dice mr-2"></i>Try Your Luck
+                </button>
+            </div>
+            
+            <!-- Mining Character and Progress -->
+            <div class="card-neon p-8 mb-8 text-center">
+                <div id="miningCharacter" class="mining-character">
+                    <i class="fas fa-hard-hat text-4xl text-black"></i>
+                </div>
+                <div class="mb-6">
+                    <div class="bg-gray-700 rounded-full h-6 mb-2">
+                        <div id="progressBar" class="progress-bar h-6 rounded-full" style="width: 0%"></div>
+                    </div>
+                    <p class="text-sm text-gray-300">Progress: <span id="progressText">0%</span> | Time remaining: <span id="timeRemaining">5:00</span></p>
+                </div>
+                
+                <!-- Captcha Section -->
+                <div id="captchaSection" class="hidden">
+                    <div class="mb-4">
+                        <p class="text-lg mb-2">Solve this math problem:</p>
+                        <p id="captchaQuestion" class="text-2xl font-bold neon-glow mb-4"></p>
+                        <input type="number" id="captchaAnswer" class="input-neon w-32 text-center" placeholder="Answer">
+                        <button id="captchaSubmit" class="floating-btn ml-4 px-4 py-2 rounded">Submit</button>
+                    </div>
+                </div>
+                
+                <!-- Claim Reward Button -->
+                <div id="claimSection" class="hidden">
+                    <button id="claimRewardBtn" class="floating-btn px-8 py-4 rounded-lg text-white font-bold text-xl">
+                        <i class="fas fa-gift mr-2"></i>Claim Your Reward
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Admin Page -->
+    <div id="adminPage" class="page hidden">
+        <div class="container mx-auto max-w-6xl">
+            <h1 class="text-3xl font-bold text-center mb-8 neon-glow">Admin Panel</h1>
+            
+            <!-- Back to Main -->
+            <div class="text-center mb-8">
+                <button id="backToMainBtn" class="floating-btn px-6 py-3 rounded-lg text-white font-bold">
+                    <i class="fas fa-arrow-left mr-2"></i>Back to Main
+                </button>
+            </div>
+            
+            <!-- Ad Management -->
+            <div class="card-neon p-8 mb-8">
+                <h2 class="text-2xl font-bold mb-6 neon-glow">Ad Management</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Login Page Ad 1:</label>
+                        <textarea id="adminLoginAd1" class="input-neon w-full mb-2 h-20" placeholder="Enter ad content (HTML)"></textarea>
+                        <button onclick="saveAd('loginAd1', 'adminLoginAd1')" class="floating-btn px-4 py-2 rounded">Save</button>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Login Page Ad 2:</label>
+                        <textarea id="adminLoginAd2" class="input-neon w-full mb-2 h-20" placeholder="Enter ad content (HTML)"></textarea>
+                        <button onclick="saveAd('loginAd2', 'adminLoginAd2')" class="floating-btn px-4 py-2 rounded">Save</button>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Popup Top Ad:</label>
+                        <textarea id="adminPopupTopAd" class="input-neon w-full mb-2 h-20" placeholder="Enter ad content (HTML)"></textarea>
+                        <button onclick="saveAd('popupTopAdContent', 'adminPopupTopAd')" class="floating-btn px-4 py-2 rounded">Save</button>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Popup Bottom Ad:</label>
+                        <textarea id="adminPopupBottomAd" class="input-neon w-full mb-2 h-20" placeholder="Enter ad content (HTML)"></textarea>
+                        <button onclick="saveAd('popupBottomAdContent', 'adminPopupBottomAd')" class="floating-btn px-4 py-2 rounded">Save</button>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Lucky Ads Content:</label>
+                        <textarea id="adminLuckyAd" class="input-neon w-full mb-2 h-20" placeholder="Enter ad content (HTML)"></textarea>
+                        <button onclick="saveAd('luckyAdsContent', 'adminLuckyAd')" class="floating-btn px-4 py-2 rounded">Save</button>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Claim Reward Ad:</label>
+                        <textarea id="adminClaimAd" class="input-neon w-full mb-2 h-20" placeholder="Enter ad content (HTML)"></textarea>
+                        <button onclick="saveAd('claimAdsContent', 'adminClaimAd')" class="floating-btn px-4 py-2 rounded">Save</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Withdrawal Requests -->
+            <div class="card-neon p-8">
+                <h2 class="text-2xl font-bold mb-6 neon-glow">Withdrawal Requests</h2>
+                <div id="withdrawalRequests" class="space-y-4">
+                    <p class="text-gray-400">No withdrawal requests at the moment.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Popup Ads -->
+    <div id="popupTopAd" class="popup-ad top">
+        <button class="popup-close-btn" onclick="closePopupAd('popupTopAd')">&times;</button>
+        <div id="popupTopAdContent" class="ads-placeholder w-full h-full">Top Ad<br>300x100</div>
+    </div>
+    
+    <div id="popupBottomAd" class="popup-ad bottom">
+        <button class="popup-close-btn" onclick="closePopupAd('popupBottomAd')">&times;</button>
+        <div id="popupBottomAdContent" class="ads-placeholder w-full h-full">Bottom Ad<br>300x100</div>
+    </div>
+    
+    <div id="popupLeftAd" class="popup-ad left">
+        <button class="popup-close-btn" onclick="closePopupAd('popupLeftAd')">&times;</button>
+        <div id="popupLeftAdContent" class="ads-placeholder w-full h-full">Left<br>100x300</div>
+    </div>
+    
+    <div id="popupRightAd" class="popup-ad right">
+        <button class="popup-close-btn" onclick="closePopupAd('popupRightAd')">&times;</button>
+        <div id="popupRightAdContent" class="ads-placeholder w-full h-full">Right<br>100x300</div>
+    </div>
+    
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('adminLoginModal')">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 neon-glow">Admin Login</h2>
+            <form id="adminLoginForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Email:</label>
+                    <input type="email" id="adminEmail" class="input-neon w-full" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Password:</label>
+                    <input type="password" id="adminPassword" class="input-neon w-full" required>
+                </div>
+                <div id="adminLoginError" class="error-text text-sm hidden">Invalid credentials</div>
+                <button type="submit" class="floating-btn w-full py-3 rounded-lg text-white font-bold">
+                    Login
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Bwallet Modal -->
+    <div id="bwalletModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('bwalletModal')">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 neon-glow">Bwallet</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Cwallet ID:</label>
+                    <input type="text" id="bwalletCwallet" class="input-neon w-full" readonly>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Current Balance:</label>
+                    <p class="text-2xl font-bold neon-glow"><span id="bwalletBalance">0</span> BabyDoge</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Withdrawal Amount:</label>
+                    <input type="number" id="bwalletWithdrawAmount" class="input-neon w-full" min="50000" placeholder="Minimum 50,000">
+                </div>
+                <button id="bwalletWithdrawBtn" class="floating-btn w-full py-3 rounded-lg text-white font-bold">
+                    Withdraw
+                </button>
+                <p id="bwalletCondition" class="text-center">
+                    You need: <span id="bwalletProgress">0</span>/50,000 BabyDoge to withdraw
+                </p>
+                <p id="bwalletPending" class="text-center success-text hidden">Withdrawal is pending...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lucky Cash Modal -->
+    <div id="luckyCashModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('luckyCashModal')">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 neon-glow">Lucky Cash</h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Cwallet ID:</label>
+                    <input type="text" id="luckyCashCwallet" class="input-neon w-full" readonly>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Current Balance:</label>
+                    <p class="text-2xl font-bold neon-glow">$<span id="luckyCashBalance">0.00</span></p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Withdrawal Amount:</label>
+                    <input type="number" id="luckyCashWithdrawAmount" class="input-neon w-full" min="2.5" step="0.01" placeholder="Minimum $2.50">
+                </div>
+                <button id="luckyCashWithdrawBtn" class="floating-btn w-full py-3 rounded-lg text-white font-bold">
+                    Withdraw
+                </button>
+                <div id="luckyCashConditions" class="text-center space-y-2">
+                    <p id="luckyCashAmountCondition">1. You need: $<span id="luckyCashProgress">0.00</span>/2.50 to withdraw</p>
+                    <p id="luckyCashAdsCondition">2. You watched: <span id="luckyCashAdsProgress">0</span>/20 Lucky Ads</p>
+                </div>
+                <p id="luckyCashPending" class="text-center success-text hidden">Withdrawal is pending...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Try Your Luck Modal -->
+    <div id="tryLuckModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('tryLuckModal')">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 neon-glow text-center">Try Your Luck</h2>
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <div id="wheelSpin" class="wheel">
+                    <!-- Wheel segments will be generated by JavaScript -->
+                </div>
+            </div>
+            <div class="text-center">
+                <button id="spinBtn" class="floating-btn px-8 py-4 rounded-lg text-white font-bold text-xl">
+                    <span id="spinBtnText">Free Spin</span>
+                </button>
+                <p id="wheelResult" class="mt-4 text-xl font-bold neon-glow hidden"></p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lucky Ads Modal -->
+    <div id="luckyAdsModal" class="modal">
+        <div class="modal-content">
+            <div class="timer-display" id="luckyAdsTimer">15</div>
+            <h2 class="text-2xl font-bold mb-6 neon-glow text-center">Lucky Ads</h2>
+            <div id="luckyAdsContent" class="ads-placeholder" style="width: 100%; height: 300px; margin-bottom: 20px;">
+                Lucky Ads Content<br>15 Second Timer
+            </div>
+            <button id="luckyAdsClaimBtn" class="floating-btn w-full py-3 rounded-lg text-white font-bold hidden">
+                Claim $0.01
+            </button>
+        </div>
+    </div>
+    
+    <!-- Claim Reward Ads Modal -->
+    <div id="claimAdsModal" class="modal">
+        <div class="modal-content">
+            <div class="timer-display" id="claimAdsTimer">15</div>
+            <h2 class="text-2xl font-bold mb-6 neon-glow text-center">Watch Ad to Claim Reward</h2>
+            <div id="claimAdsContent" class="ads-placeholder" style="width: 100%; height: 300px; margin-bottom: 20px;">
+                Reward Ad Content<br>15 Second Timer
+            </div>
+            <button id="claimAdsClaimBtn" class="floating-btn w-full py-3 rounded-lg text-white font-bold hidden">
+                Claim 10,000 BabyDoge
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global Variables
+        let userData = {
+            email: '',
+            cwallet: '',
+            bwalletBalance: 0,
+            luckyCashBalance: 0,
+            luckyAdsWatched: 0,
+            isFirstSpin: true,
+            spinRequiredAds: 0,
+            totalSpins: 0,
+            freeSpinsRemaining: 0
+        };
+        
+        let progressTimer = null;
+        let progressSeconds = 300; // 5 minutes
+        let popupAdTimers = {};
+        let popupAdStates = {};
+        let titleClickCount = 0;
+        let titleClickTimer = null;
+        
+        // Wheel segments with exact prizes and angles - FIXED POSITIONING
+        const wheelSegments = [
+            {prize: '0.01$', angle: 0, color: '#ff6b6b'},
+            {prize: '0.03$', angle: 32.727, color: '#4ecdc4'},
+            {prize: '0.05$', angle: 65.454, color: '#45b7d1'},
+            {prize: 'Try Again', angle: 98.181, color: '#96ceb4'},
+            {prize: '0.1$', angle: 130.908, color: '#feca57'},
+            {prize: '0.3$', angle: 163.635, color: '#ff9ff3'},
+            {prize: '0.5$', angle: 196.362, color: '#54a0ff'},
+            {prize: '3x Spin', angle: 229.089, color: '#5f27cd'},
+            {prize: '1$', angle: 261.816, color: '#00d2d3'},
+            {prize: '3$', angle: 294.543, color: '#ff6b6b'},
+            {prize: '5$', angle: 327.27, color: '#4ecdc4'}
+        ];
+
+        // Fetch admin credentials
+        let adminCreds = null;
+
+        async function loadAdminCredentials() {
+            try {
+                const response = await fetch('config.json');
+                if (!response.ok) throw new Error('Failed to load config');
+                adminCreds = await response.json();
+            } catch (error) {
+                console.error('Error loading admin credentials:', error);
+                adminCreds = { adminCreds: { email: '', password: '' } }; // Fallback
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAdminCredentials().then(() => {
+                loadUserData();
+                setupEventListeners();
+                loadAds();
+                createWheelSegments();
+            });
+        });
+
+        // Create wheel segments with proper positioning
+        function createWheelSegments() {
+            const wheel = document.getElementById('wheelSpin');
+            wheel.innerHTML = '';
+            
+            wheelSegments.forEach((segment, index) => {
+                const segmentElement = document.createElement('div');
+                segmentElement.className = 'segment-text';
+                segmentElement.textContent = segment.prize;
+                
+                // Calculate position at the center of each segment
+                const radius = 120; // Distance from center to text
+                const angleInRadians = (segment.angle + 16.363) * (Math.PI / 180); // Center of segment
+                const x = radius * Math.cos(angleInRadians - Math.PI / 2);
+                const y = radius * Math.sin(angleInRadians - Math.PI / 2);
+                
+                segmentElement.style.left = `${150 + x}px`; // Center of wheel (300px / 2 = 150px)
+                segmentElement.style.top = `${150 + y}px`;
+                segmentElement.style.transform = `translate(-50%, -50%) rotate(${segment.angle + 16.363 + 90}deg)`; // Rotate text to align with segment
+                
+                wheel.appendChild(segmentElement);
+            });
+        }
+        
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Login Title Click (Admin Access)
+            document.getElementById('loginTitle').addEventListener('click', handleTitleClick);
+            
+            // Login Form
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Admin Login Form
+            document.getElementById('adminLoginForm').addEventListener('submit', handleAdminLogin);
+            
+            // Main Page Buttons
+            document.getElementById('luckyAdsBtn').addEventListener('click', () => showModal('luckyAdsModal'));
+            document.getElementById('luckyCashBtn').addEventListener('click', () => showModal('luckyCashModal'));
+            document.getElementById('bwalletBtn').addEventListener('click', () => showModal('bwalletModal'));
+            document.getElementById('tryLuckBtn').addEventListener('click', () => showModal('tryLuckModal'));
+            
+            // Captcha
+            document.getElementById('captchaSubmit').addEventListener('click', checkCaptcha);
+            
+            // Claim Reward
+            document.getElementById('claimRewardBtn').addEventListener('click', () => showModal('claimAdsModal'));
+            
+            // Withdrawal Buttons
+            document.getElementById('bwalletWithdrawBtn').addEventListener('click', handleBwalletWithdraw);
+            document.getElementById('luckyCashWithdrawBtn').addEventListener('click', handleLuckyCashWithdraw);
+            
+            // Spin Wheel
+            document.getElementById('spinBtn').addEventListener('click', spinWheel);
+            
+            // Lucky Ads Claim
+            document.getElementById('luckyAdsClaimBtn').addEventListener('click', claimLuckyAds);
+            document.getElementById('claimAdsClaimBtn').addEventListener('click', claimRewardAds);
+            
+            // Admin
+            document.getElementById('backToMainBtn').addEventListener('click', () => showPage('mainPage'));
+        }
+        
+        // Title Click Handler for Admin Access
+        function handleTitleClick() {
+            titleClickCount++;
+            if (titleClickTimer) clearTimeout(titleClickTimer);
+            
+            if (titleClickCount >= 5) {
+                titleClickCount = 0;
+                showModal('adminLoginModal');
+                return;
+            }
+            
+            titleClickTimer = setTimeout(() => {
+                titleClickCount = 0;
+            }, 2000);
+        }
+        
+        // Admin Login Handler
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+            
+            // Simple hash check (client-side, not secure for production)
+            const hashedInput = btoa(email + password);
+            const expectedHash = btoa(atob(adminCreds.adminCreds.email) + atob(adminCreds.adminCreds.password));
+            
+            if (hashedInput === expectedHash) {
+                closeModal('adminLoginModal');
+                showPage('adminPage');
+                updateWithdrawalRequests();
+            } else {
+                document.getElementById('adminLoginError').classList.remove('hidden');
+            }
+        }
+        
+        // Login Handler
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const cwallet = document.getElementById('cwallet').value;
+            const password = document.getElementById('password').value;
+            
+            if (!validatePassword(password)) {
+                document.getElementById('passwordError').classList.remove('hidden');
+                return;
+            }
+            
+            userData.email = email;
+            userData.cwallet = cwallet;
+            saveUserData();
+            
+            // Only set new start time if no progress is saved or it’s completed
+            if (!localStorage.getItem('progressStartTime')) {
+                localStorage.setItem('progressStartTime', Date.now().toString());
+            }
+            
+            showPage('mainPage');
+            startProgressTimer();
+            initializePopupAds();
+            updateAllDisplays();
+        }
+        
+        // Password Validation
+        function validatePassword(password) {
+            const minLength = 8;
+            const hasUpper = /[A-Z]/.test(password);
+            const hasLower = /[a-z]/.test(password);
+            const hasNumber = /\d/.test(password);
+            const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+            
+            return password.length >= minLength && hasUpper && hasLower && hasNumber && hasSpecial;
+        }
+        
+        // Page Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+        
+        // Modal Management
+        function showModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+            if (modalId === 'luckyAdsModal') {
+                startAdTimer('luckyAdsTimer', 'luckyAdsClaimBtn');
+            } else if (modalId === 'claimAdsModal') {
+                startAdTimer('claimAdsTimer', 'claimAdsClaimBtn');
+            }
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // Progress Timer
+        function startProgressTimer() {
+            if (progressTimer) clearInterval(progressTimer);
+            
+            // Load saved progress start time
+            const savedStartTime = localStorage.getItem('progressStartTime');
+            const now = Date.now();
+            
+            if (savedStartTime) {
+                const elapsedSeconds = Math.floor((now - parseInt(savedStartTime)) / 1000);
+                progressSeconds = Math.max(300 - elapsedSeconds, 0); // Remaining time
+            } else {
+                progressSeconds = 300; // Fresh start
+                localStorage.setItem('progressStartTime', now.toString());
+            }
+            
+            if (progressSeconds <= 0) {
+                // Progress already complete
+                document.getElementById('progressBar').style.width = '100%';
+                document.getElementById('progressText').textContent = '100%';
+                document.getElementById('timeRemaining').textContent = '0:00';
+                document.getElementById('miningCharacter').classList.add('jumping');
+                showCaptcha();
+                return;
+            }
+            
+            progressTimer = setInterval(() => {
+                progressSeconds--;
+                const percentage = ((300 - progressSeconds) / 300) * 100;
+                
+                document.getElementById('progressBar').style.width = percentage + '%';
+                document.getElementById('progressText').textContent = Math.round(percentage) + '%';
+                
+                const minutes = Math.floor(progressSeconds / 60);
+                const seconds = progressSeconds % 60;
+                document.getElementById('timeRemaining').textContent = 
+                    `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update mining character animation
+                const character = document.getElementById('miningCharacter');
+                if (progressSeconds <= 0) {
+                    character.classList.add('jumping');
+                    clearInterval(progressTimer);
+                    showCaptcha();
+                    localStorage.removeItem('progressStartTime'); // Clear on completion
+                } else {
+                    character.classList.remove('jumping');
+                }
+            }, 1000);
+        }
+        
+        // Captcha System
+        function showCaptcha() {
+            const num1 = Math.floor(Math.random() * 20) + 1;
+            const num2 = Math.floor(Math.random() * 20) + 1;
+            const operation = Math.random() > 0.5 ? '+' : '-';
+            let question, answer;
+            
+            if (operation === '+') {
+                question = `${num1} + ${num2}`;
+                answer = num1 + num2;
+            } else {
+                if (num1 < num2) [num1, num2] = [num2, num1]; // Ensure positive result
+                question = `${num1} - ${num2}`;
+                answer = num1 - num2;
+            }
+            
+            document.getElementById('captchaQuestion').textContent = question;
+            document.getElementById('captchaQuestion').dataset.answer = answer;
+            document.getElementById('captchaSection').classList.remove('hidden');
+        }
+        
+        function checkCaptcha() {
+            const userAnswer = parseInt(document.getElementById('captchaAnswer').value);
+            const correctAnswer = parseInt(document.getElementById('captchaQuestion').dataset.answer);
+            
+            if (userAnswer === correctAnswer) {
+                document.getElementById('captchaSection').classList.add('hidden');
+                document.getElementById('claimSection').classList.remove('hidden');
+            } else {
+                alert('Incorrect answer. Please try again.');
+                document.getElementById('captchaAnswer').value = '';
+            }
+        }
+        
+        // Ad Timer
+        function startAdTimer(timerId, claimBtnId) {
+            let seconds = 15;
+            document.getElementById(timerId).textContent = seconds;
+            document.getElementById(claimBtnId).classList.add('hidden');
+            
+            const timer = setInterval(() => {
+                seconds--;
+                document.getElementById(timerId).textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(timer);
+                    document.getElementById(claimBtnId).classList.remove('hidden');
+                }
+            }, 1000);
+        }
+        
+        // Popup Ads Management
+        function initializePopupAds() {
+            const popupAds = ['popupTopAd', 'popupBottomAd', 'popupLeftAd', 'popupRightAd'];
+            
+            popupAds.forEach(adId => {
+                popupAdStates[adId] = { closed: 0, permanent: false };
+                showPopupAd(adId);
+            });
+        }
+        
+        function showPopupAd(adId) {
+            if (popupAdStates[adId].permanent) return;
+            
+            const ad = document.getElementById(adId);
+            const closeBtn = ad.querySelector('.popup-close-btn');
+            
+            ad.style.display = 'block';
+            closeBtn.style.display = 'none';
+            
+            // Show close button after 10 seconds
+            popupAdTimers[adId] = setTimeout(() => {
+                closeBtn.style.display = 'block';
+            }, 10000);
+        }
+        
+        function closePopupAd(adId) {
+            const ad = document.getElementById(adId);
+            ad.style.display = 'none';
+            
+            popupAdStates[adId].closed++;
+            
+            if (popupAdStates[adId].closed >= 2) {
+                popupAdStates[adId].permanent = true;
+            } else {
+                // Show again after 10 seconds
+                setTimeout(() => showPopupAd(adId), 10000);
+            }
+        }
+        
+        // Wheel Spin with Fixed Positioning
+        function spinWheel() {
+            const wheel = document.getElementById('wheelSpin');
+            const btn = document.getElementById('spinBtn');
+            const btnText = document.getElementById('spinBtnText');
+            const result = document.getElementById('wheelResult');
+            
+            // Check if user can spin
+            if (!userData.isFirstSpin && userData.freeSpinsRemaining <= 0 && userData.spinRequiredAds > 0) {
+                alert(`You need to watch ${userData.spinRequiredAds} more Lucky Ads to spin again.`);
+                return;
+            }
+            
+            // Disable button during spin
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            
+            let selectedPrize;
+            
+            if (userData.isFirstSpin) {
+                // First spin: Only $0.5 or $1 with high chance
+                const firstSpinPrizes = ['0.5$', '1$'];
+                selectedPrize = firstSpinPrizes[Math.floor(Math.random() * firstSpinPrizes.length)];
+            } else {
+                // Check for free spins from 3x Spin bonus
+                if (userData.freeSpinsRemaining > 0) {
+                    // Free spin - normal probabilities
+                    const rand = Math.random() * 100;
+                    if (rand < 99) {
+                        const lowPrizes = ['0.01$', '0.03$', '0.05$', 'Try Again'];
+                        selectedPrize = lowPrizes[Math.floor(Math.random() * lowPrizes.length)];
+                    } else {
+                        const highPrizes = ['0.1$', '0.3$', '0.5$', '3x Spin', '1$', '3$', '5$'];
+                        selectedPrize = highPrizes[Math.floor(Math.random() * highPrizes.length)];
+                    }
+                } else {
+                    // Regular subsequent spins: 99% chance for low prizes
+                    const rand = Math.random() * 100;
+                    if (rand < 99) {
+                        const lowPrizes = ['0.01$', '0.03$', '0.05$', 'Try Again'];
+                        selectedPrize = lowPrizes[Math.floor(Math.random() * lowPrizes.length)];
+                    } else {
+                        const highPrizes = ['0.1$', '0.3$', '0.5$', '3x Spin', '1$', '3$', '5$'];
+                        selectedPrize = highPrizes[Math.floor(Math.random() * highPrizes.length)];
+                    }
+                }
+            }
+            
+            // Find the target segment
+            const targetSegment = wheelSegments.find(segment => segment.prize === selectedPrize);
+            if (!targetSegment) {
+                console.error('Target segment not found for prize:', selectedPrize);
+                return;
+            }
+            
+            // Calculate precise rotation to land on the center of the target segment
+            const segmentCenter = targetSegment.angle + 16.363; // Center of the segment
+            const finalRotation = 1800 + (360 - segmentCenter); // 5 full spins + precise landing
+            
+            wheel.style.transition = 'transform 3s cubic-bezier(0.23, 1, 0.32, 1)';
+            wheel.style.transform = `rotate(${finalRotation}deg)`;
+            
+            setTimeout(() => {
+                result.textContent = `You won ${selectedPrize}!`;
+                result.classList.remove('hidden');
+                
+                // Process the reward
+                if (selectedPrize !== 'Try Again') {
+                    if (selectedPrize === '3x Spin') {
+                        userData.freeSpinsRemaining += 3;
+                    } else {
+                        const cashValue = parseFloat(selectedPrize.replace('$', ''));
+                        userData.luckyCashBalance += cashValue;
+                    }
+                }
+                
+                // Update spin state
+                if (userData.isFirstSpin) {
+                    userData.isFirstSpin = false;
+                    userData.totalSpins = 1;
+                    userData.spinRequiredAds = 15;
+                } else {
+                    userData.totalSpins++;
+                    if (userData.freeSpinsRemaining > 0) {
+                        userData.freeSpinsRemaining--;
+                    } else {
+                        userData.spinRequiredAds = 15;
+                    }
+                }
+                
+                saveUserData();
+                updateAllDisplays();
+                
+                // Re-enable button based on conditions
+                updateSpinButton();
+                wheel.style.transition = 'none'; // Reset transition for next spin
+            }, 3000);
+        }
+        
+        // Update Spin Button State
+        function updateSpinButton() {
+            const spinBtn = document.getElementById('spinBtn');
+            const spinBtnText = document.getElementById('spinBtnText');
+            
+            if (userData.isFirstSpin) {
+                spinBtnText.textContent = 'Free Spin';
+                spinBtn.disabled = false;
+                spinBtn.style.opacity = '1';
+            } else if (userData.freeSpinsRemaining > 0) {
+                spinBtnText.textContent = `Free Spin (${userData.freeSpinsRemaining} remaining)`;
+                spinBtn.disabled = false;
+                spinBtn.style.opacity = '1';
+            } else if (userData.spinRequiredAds > 0) {
+                spinBtnText.textContent = `Watch ${userData.spinRequiredAds} Lucky Ads to Spin Again`;
+                spinBtn.disabled = true;
+                spinBtn.style.opacity = '0.5';
+            } else {
+                spinBtnText.textContent = 'Spin Again';
+                spinBtn.disabled = false;
+                spinBtn.style.opacity = '1';
+            }
+        }
+        
+        // Lucky Ads Claim
+        function claimLuckyAds() {
+            userData.luckyAdsWatched++;
+            userData.luckyCashBalance += 0.01; // Add $0.01 for watching Lucky Ad
+            
+            // Reduce required ads for spinning
+            if (userData.spinRequiredAds > 0) {
+                userData.spinRequiredAds--;
+            }
+            
+            closeModal('luckyAdsModal');
+            saveUserData();
+            updateAllDisplays();
+        }
+        
+        // Claim Reward Ads
+        function claimRewardAds() {
+            userData.bwalletBalance += 10000;
+            document.getElementById('claimSection').classList.add('hidden');
+            document.getElementById('miningCharacter').classList.remove('jumping');
+            
+            closeModal('claimAdsModal');
+            startProgressTimer();
+            saveUserData();
+            updateAllDisplays();
+        }
+        
+        // Withdrawal Handlers
+        function handleBwalletWithdraw() {
+            const amount = parseInt(document.getElementById('bwalletWithdrawAmount').value);
+            const condition = document.getElementById('bwalletCondition');
+            const pending = document.getElementById('bwalletPending');
+            
+            if (userData.bwalletBalance < 50000 || amount < 50000) {
+                condition.classList.add('error-text');
+                return;
+            }
+            
+            condition.classList.remove('error-text');
+            pending.classList.remove('hidden');
+            
+            // Add to withdrawal requests
+            addWithdrawalRequest('Bwallet', amount, userData.cwallet);
+            
+            // Reset balance
+            userData.bwalletBalance = 0;
+            saveUserData();
+            updateAllDisplays();
+            
+            setTimeout(() => {
+                pending.classList.add('hidden');
+            }, 10000);
+        }
+        
+        function handleLuckyCashWithdraw() {
+            const amount = parseFloat(document.getElementById('luckyCashWithdrawAmount').value);
+            const amountCondition = document.getElementById('luckyCashAmountCondition');
+            const adsCondition = document.getElementById('luckyCashAdsCondition');
+            const pending = document.getElementById('luckyCashPending');
+            
+            if (userData.luckyCashBalance < 2.5 || userData.luckyAdsWatched < 20 || amount < 2.5) {
+                if (userData.luckyCashBalance < 2.5) amountCondition.classList.add('error-text');
+                if (userData.luckyAdsWatched < 20) adsCondition.classList.add('error-text');
+                return;
+            }
+            
+            amountCondition.classList.remove('error-text');
+            adsCondition.classList.remove('error-text');
+            pending.classList.remove('hidden');
+            
+            // Reset conditions
+            userData.luckyCashBalance = 0;
+            userData.luckyAdsWatched = 0;
+            
+            // Add to withdrawal requests
+            addWithdrawalRequest('Lucky Cash', amount, userData.cwallet);
+            
+            setTimeout(() => {
+                pending.classList.add('hidden');
+            }, 10000);
+            
+            saveUserData();
+            updateAllDisplays();
+        }
+        
+        // Data Management
+        function saveUserData() {
+            localStorage.setItem('cryptoFaucetUserData', JSON.stringify(userData));
+        }
+        
+        function loadUserData() {
+            const saved = localStorage.getItem('cryptoFaucetUserData');
+            if (saved) {
+                userData = { ...userData, ...JSON.parse(saved) };
+            }
+        }
+        
+        // Update All Displays
+        function updateAllDisplays() {
+            // Update Bwallet
+            document.getElementById('bwalletCwallet').value = userData.cwallet;
+            document.getElementById('bwalletBalance').textContent = userData.bwalletBalance.toLocaleString();
+            document.getElementById('bwalletProgress').textContent = userData.bwalletBalance.toLocaleString();
+            
+            // Update Lucky Cash
+            document.getElementById('luckyCashCwallet').value = userData.cwallet;
+            document.getElementById('luckyCashBalance').textContent = userData.luckyCashBalance.toFixed(2);
+            document.getElementById('luckyCashProgress').textContent = userData.luckyCashBalance.toFixed(2);
+            document.getElementById('luckyCashAdsProgress').textContent = userData.luckyAdsWatched;
+            
+            // Update Spin Button
+            updateSpinButton();
+        }
+        
+        // Admin Functions
+        function saveAd(adElementId, inputId) {
+            const adContent = document.getElementById(inputId).value;
+            if (adContent) {
+                localStorage.setItem(`ad_${adElementId}`, adContent);
+                alert('Ad content saved successfully!');
+                loadAds();
+            }
+        }
+        
+        function loadAds() {
+            // Load saved ad content
+            const adElements = ['loginAd1', 'loginAd2', 'popupTopAdContent', 'popupBottomAdContent', 
+                              'luckyAdsContent', 'claimAdsContent'];
+            
+            adElements.forEach(elementId => {
+                const savedContent = localStorage.getItem(`ad_${elementId}`);
+                if (savedContent) {
+                    document.getElementById(elementId).innerHTML = savedContent;
+                }
+            });
+        }
+        
+        function addWithdrawalRequest(type, amount, cwallet) {
+            const requests = JSON.parse(localStorage.getItem('withdrawalRequests') || '[]');
+            requests.push({
+                type: type,
+                amount: amount,
+                cwallet: cwallet,
+                date: new Date().toISOString(),
+                status: 'pending'
+            });
+            localStorage.setItem('withdrawalRequests', JSON.stringify(requests));
+        }
+        
+        function updateWithdrawalRequests() {
+            const requests = JSON.parse(localStorage.getItem('withdrawalRequests') || '[]');
+            const container = document.getElementById('withdrawalRequests');
+            
+            if (requests.length === 0) {
+                container.innerHTML = '<p class="text-gray-400">No withdrawal requests at the moment.</p>';
+                return;
+            }
+            
+            container.innerHTML = requests.map(request => `
+                <div class="card-neon p-4">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p><strong>Type:</strong> ${request.type}</p>
+                            <p><strong>Amount:</strong> ${request.amount}</p>
+                            <p><strong>Cwallet:</strong> ${request.cwallet}</p>
+                            <p><strong>Date:</strong> ${new Date(request.date).toLocaleString()}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="success-text">${request.status}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    </script>
 </body>
 </html>
-
